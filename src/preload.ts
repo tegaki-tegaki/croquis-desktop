@@ -12,4 +12,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.on("selected-folder", (_event, value) => callback(value)),
   selectRandomImage: (folder_path: string) =>
     ipcRenderer.send("select-random-image", folder_path),
+  onStopSession: (callback: () => void) =>
+    ipcRenderer.on("stop-session", (_event, value) => callback()),
 });

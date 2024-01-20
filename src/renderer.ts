@@ -39,6 +39,7 @@ const theImage = document.querySelector("#the-image");
 const imageDurationRange = document.querySelector("#image-duration");
 const imageDurationOutput = document.querySelector("#image-duration-output");
 const startSessionButton = document.querySelector("#start-session-button");
+const overlay = document.querySelector("#overlay");
 
 setButton.addEventListener("click", () => {
   const title = titleInput.value;
@@ -50,6 +51,7 @@ selectFileButton.addEventListener("click", () => {
 });
 window.electronAPI.onSelectedFile((filepath: string) => {
   theImage.setAttribute("src", `resource://${filepath}`);
+  overlay.removeAttribute("hidden");
   console.log(`renderer: ${filepath}`);
 });
 
@@ -72,6 +74,10 @@ startSessionButton.addEventListener("click", () => {
   const folder_path = selectedFolder.getAttribute("value");
   console.log({ folder: folder_path });
   window.electronAPI.selectRandomImage(folder_path);
+});
+
+window.electronAPI.onStopSession((filepath: string) => {
+  overlay.setAttribute("hidden", "true");
 });
 
 console.log(

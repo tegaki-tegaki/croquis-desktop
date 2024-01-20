@@ -1,4 +1,13 @@
-import { app, BrowserWindow, dialog, ipcMain, net, protocol } from "electron";
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  ipcMain,
+  Menu,
+  MenuItem,
+  net,
+  protocol,
+} from "electron";
 import fs from "fs";
 import path from "path";
 import { selectRandom } from "./utils";
@@ -12,6 +21,24 @@ const protocolName = "resource";
 protocol.registerSchemesAsPrivileged([
   { scheme: protocolName, privileges: { bypassCSP: true } },
 ]);
+
+const menu = new Menu();
+menu.append(
+  new MenuItem({
+    label: "Electron",
+    submenu: [
+      {
+        role: "help",
+        accelerator: "Esc",
+        click: () => {
+          BrowserWindow.getFocusedWindow().webContents.send("stop-session");
+        },
+      },
+    ],
+  })
+);
+
+Menu.setApplicationMenu(menu);
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
