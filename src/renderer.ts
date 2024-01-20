@@ -33,7 +33,11 @@ import "./styles/index.css";
 const setButton = document.querySelector("#the-button");
 const titleInput = document.querySelector("#the-title");
 const selectFileButton = document.querySelector("#select-file-button");
+const selectFolderButton = document.querySelector("#select-folder-button");
+const selectedFolder = document.querySelector("#display-selected-folder");
 const theImage = document.querySelector("#the-image");
+const imageDurationRange = document.querySelector("#image-duration");
+const imageDurationOutput = document.querySelector("#image-duration-output");
 
 setButton.addEventListener("click", () => {
   const title = titleInput.value;
@@ -43,10 +47,22 @@ setButton.addEventListener("click", () => {
 selectFileButton.addEventListener("click", () => {
   window.electronAPI.selectFile();
 });
-
 window.electronAPI.onSelectedFile((filepath: string) => {
   theImage.setAttribute("src", `resource://${filepath}`);
   console.log(`renderer: ${filepath}`);
+});
+
+selectFolderButton.addEventListener("click", () => {
+  window.electronAPI.selectFolder();
+});
+window.electronAPI.onSelectedFolder((folder_path: string) => {
+  // theImage.setAttribute("src", `resource://${folder_path}`);
+  // console.log(`renderer: ${folder_path}`);
+  selectedFolder.setAttribute("value", `${folder_path}`);
+});
+
+imageDurationRange.addEventListener("input", (event) => {
+  imageDurationOutput.textContent = `${event.target.value}`;
 });
 
 console.log(

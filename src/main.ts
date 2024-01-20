@@ -27,7 +27,7 @@ const createWindow = () => {
     win.setTitle(title);
   });
 
-  ipcMain.on("select-file", (event, arg) => {
+  ipcMain.on("select-file", (event) => {
     const result = dialog.showOpenDialog({
       properties: ["openFile"],
       filters: [{ name: "Images", extensions: ["png", "jpg", "jpeg"] }],
@@ -38,6 +38,26 @@ const createWindow = () => {
       console.log({ filepath });
       event.reply("selected-file", filepath);
     });
+  });
+
+  ipcMain.on("select-folder", (event) => {
+    const result = dialog.showOpenDialog({
+      properties: ["openDirectory"],
+    });
+
+    result.then(({ canceled, filePaths, bookmarks }) => {
+      const filepath = filePaths[0];
+      console.log({ filepath });
+      event.reply("selected-folder", filepath);
+    });
+  });
+
+  ipcMain.on("select-random-image-from-folder", (event, folder_path) => {
+    const dir = fs.readdirSync(folder_path, { recursive: true });
+
+    console.log({ dir });
+    const filepath = "";
+    event.reply("selected-file", filepath);
   });
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {

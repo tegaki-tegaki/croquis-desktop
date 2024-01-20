@@ -9,15 +9,51 @@
     <div class="page">
       <div class="page-content">
         <div class="card vstack">
-          <div class="hstack">
-            <input id="the-title" class="cd-input" type="text">
+          <div class="hstack hide">
+            <input id="the-title" class="cd-input" type="text" />
             <button id="the-button" class="cd-button">Set title</button>
           </div>
-          <div class="box">
-            <button id="select-file-button" class="cd-button">Select file</button>
+          <div class="vstack">
+            <button hidden id="select-file-button" class="cd-button">
+              Select file
+            </button>
+            <button id="select-folder-button" class="cd-button">
+              Select folder
+            </button>
+            <input
+              id="display-selected-folder"
+              class="cd-input cd-input--long"
+              disabled
+              readonly
+              value=""
+            />
+            <div class="hstack between">
+              <label class="cd-text" for="image-duration">image duration</label>
+              <div>
+                <output id="image-duration-output" class="cd-text">60</output>
+                <span class="cd-text">s</span>
+              </div>
+            </div>
+            <input
+              id="image-duration"
+              class="cd-range"
+              name="image-duration"
+              type="range"
+              step="1"
+              min="5"
+              max="120"
+              value="60"
+            />
+            <div class="vspace"></div>
+            <div class="hstack gap-1">
+              <button id="select-file-button" class="cd-button">
+                Start session
+              </button>
+              <span class="cd-text">press (esc) to stop</span>
+            </div>
           </div>
         </div>
-        <img id="the-image" src="">
+        <img id="the-image" src="" />
       </div>
     </div>
   </body>

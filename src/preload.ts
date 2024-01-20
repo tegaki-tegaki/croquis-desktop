@@ -7,4 +7,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   selectFile: () => ipcRenderer.send("select-file"),
   onSelectedFile: (callback: (filepath: string) => void) =>
     ipcRenderer.on("selected-file", (_event, value) => callback(value)),
+  selectFolder: () => ipcRenderer.send("select-folder"),
+  onSelectedFolder: (callback: (folder_path: string) => void) =>
+    ipcRenderer.on("selected-folder", (_event, value) => callback(value)),
 });

@@ -58,41 +58,49 @@ body {
   padding: 0.3rem 0.5rem;
 }
 
+.cd-input--long {
+  width: 100%;
+}
+
+.cd-range {
+  width: 100%;
+}
+
+.cd-text {
+  color: var(--highlight);
+}
+
 .hstack {
   display: flex;
   gap: 3px;
+  align-items: baseline;
+  width: 100%;
 }
 
 .vstack {
   display: flex;
   flex-flow: column nowrap;
   gap: 10px;
+  align-items: flex-start;
+  width: 100%;
 }
 
-.test {
-  width: 100px;
-  height: 100px;
-  margin: 10px;
-  padding: 10px;
+.gap-1 {
+  gap: 20px;
 }
 
-.test-100 {
-  background-color: var(--surface-primary-100);
-}
-.test-200 {
-  background-color: var(--surface-primary-200);
-}
-.test-300 {
-  background-color: var(--surface-primary-300);
-}
-.test-400 {
-  background-color: var(--surface-primary-400);
-}
-
-.gap {
+.gap-2 {
   gap: 60px;
 }
 
-:root .zebra {
-  --zebra: 0;
+.hide {
+  display: none;
+}
+
+.vspace {
+  height: 40px;
+}
+
+.between {
+  justify-content: space-between;
 }
