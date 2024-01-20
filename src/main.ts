@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, net, protocol } from "electron";
 import fs from "fs";
 import path from "path";
 
@@ -6,6 +6,11 @@ import path from "path";
 if (require("electron-squirrel-startup")) {
   app.quit();
 }
+
+const protocolName = "resource";
+protocol.registerSchemesAsPrivileged([
+  { scheme: protocolName, privileges: { bypassCSP: true } },
+]);
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
@@ -29,13 +34,9 @@ const createWindow = () => {
     });
 
     result.then(({ canceled, filePaths, bookmarks }) => {
-      // const file = fs.readFileSync(filePaths[0]);
       const filepath = filePaths[0];
       console.log({ filepath });
-      // event.reply("selected-file", filepath);
-      event.sender.send("selected-file", filepath);
-      // const win = BrowserWindow.fromWebContents(event.sender);
-      // win.webContents.send("selected-file", filepath);
+      event.reply("selected-file", filepath);
     });
   });
 
@@ -51,6 +52,11 @@ const createWindow = () => {
 };
 
 app.whenReady().then(() => {
+  protocol.handle(protocolName, (request) => {
+    const url = request.url.replace(`${protocolName}://`, "");
+    return net.fetch(`file://${url}`);
+  });
+
   createWindow();
 });
 

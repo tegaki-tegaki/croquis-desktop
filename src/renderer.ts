@@ -26,21 +26,26 @@
  * ```
  */
 
-import "./index.css";
+import "./styles/reset.css";
+import "./styles/theme.css";
+import "./styles/index.css";
 
-const setButton = document.getElementById("btn");
-const titleInput = document.getElementById("title");
+const setButton = document.querySelector("#the-button");
+const titleInput = document.querySelector("#the-title");
+const selectFileButton = document.querySelector("#select-file-button");
+const theImage = document.querySelector("#the-image");
+
 setButton.addEventListener("click", () => {
   const title = titleInput.value;
   window.electronAPI.setTitle(title);
 });
 
-const selectFileButton = document.querySelector("#select-file-btn");
 selectFileButton.addEventListener("click", () => {
   window.electronAPI.selectFile();
 });
 
 window.electronAPI.onSelectedFile((filepath: string) => {
+  theImage.setAttribute("src", `resource://${filepath}`);
   console.log(`renderer: ${filepath}`);
 });
 

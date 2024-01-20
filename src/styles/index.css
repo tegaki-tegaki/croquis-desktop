@@ -1,0 +1,98 @@
+html {
+  height: 100%;
+}
+
+body {
+  display: block;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  width: 100%;
+  height: 100%;
+  background-color: var(--surface-primary);
+}
+
+.page {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: space-around;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
+.page-content {
+  width: 40rem;
+}
+
+.box {
+  display: flex;
+}
+
+.card {
+  background-color: var(--surface-secondary);
+  border-radius: 10px;
+  box-shadow: 0px 1px 10px black;
+  padding: 2rem;
+}
+
+.cd-button {
+  border-radius: 4px;
+  border: none;
+  background-color: var(--decal-primary);
+  color: white;
+  padding: 0.3rem 1rem;
+  cursor: pointer;
+  border: 1px solid black;
+}
+
+.cd-button:hover {
+  filter: brightness(1.15);
+  box-shadow: 0px 0.4px 2px rgba(0, 0, 0, 0.5);
+}
+
+.cd-input {
+  border-radius: 2px;
+  background-color: var(--surface-secondary-dark);
+  color: white;
+  border: none;
+  padding: 0.3rem 0.5rem;
+}
+
+.hstack {
+  display: flex;
+  gap: 3px;
+}
+
+.vstack {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+}
+
+.test {
+  width: 100px;
+  height: 100px;
+  margin: 10px;
+  padding: 10px;
+}
+
+.test-100 {
+  background-color: var(--surface-primary-100);
+}
+.test-200 {
+  background-color: var(--surface-primary-200);
+}
+.test-300 {
+  background-color: var(--surface-primary-300);
+}
+.test-400 {
+  background-color: var(--surface-primary-400);
+}
+
+.gap {
+  gap: 60px;
+}
+
+:root .zebra {
+  --zebra: 0;
+}
