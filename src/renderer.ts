@@ -38,6 +38,7 @@ const selectedFolder = document.querySelector("#display-selected-folder");
 const theImage = document.querySelector("#the-image");
 const imageDurationRange = document.querySelector("#image-duration");
 const imageDurationOutput = document.querySelector("#image-duration-output");
+const startSessionButton = document.querySelector("#start-session-button");
 
 setButton.addEventListener("click", () => {
   const title = titleInput.value;
@@ -63,6 +64,14 @@ window.electronAPI.onSelectedFolder((folder_path: string) => {
 
 imageDurationRange.addEventListener("input", (event) => {
   imageDurationOutput.textContent = `${event.target.value}`;
+});
+
+startSessionButton.addEventListener("click", () => {
+  console.log(`renderer: start session`);
+  // window.electronAPI.startSession();
+  const folder_path = selectedFolder.getAttribute("value");
+  console.log({ folder: folder_path });
+  window.electronAPI.selectRandomImage(folder_path);
 });
 
 console.log(

@@ -10,4 +10,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   selectFolder: () => ipcRenderer.send("select-folder"),
   onSelectedFolder: (callback: (folder_path: string) => void) =>
     ipcRenderer.on("selected-folder", (_event, value) => callback(value)),
+  selectRandomImage: (folder_path: string) =>
+    ipcRenderer.send("select-random-image", folder_path),
 });

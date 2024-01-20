@@ -1,6 +1,7 @@
 import { app, BrowserWindow, dialog, ipcMain, net, protocol } from "electron";
 import fs from "fs";
 import path from "path";
+import { selectRandom } from "./utils";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -52,11 +53,12 @@ const createWindow = () => {
     });
   });
 
-  ipcMain.on("select-random-image-from-folder", (event, folder_path) => {
+  ipcMain.on("select-random-image", (event, folder_path) => {
     const dir = fs.readdirSync(folder_path, { recursive: true });
-
-    console.log({ dir });
-    const filepath = "";
+    const filepath_within_dir = selectRandom(dir);
+    const filepath = `${folder_path}/${filepath_within_dir}`;
+    // TODO: re-roll if non image file (eg. .DS_Store)
+    console.log({ filepath });
     event.reply("selected-file", filepath);
   });
 
