@@ -1,4 +1,5 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, dialog, ipcMain } from "electron";
+import fs from "fs";
 import path from "path";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -7,10 +8,9 @@ if (require("electron-squirrel-startup")) {
 }
 
 const createWindow = () => {
-  // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1920,
+    height: 1080,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
@@ -22,7 +22,23 @@ const createWindow = () => {
     win.setTitle(title);
   });
 
-  // and load the index.html of the app.
+  ipcMain.on("select-file", (event, arg) => {
+    const result = dialog.showOpenDialog({
+      properties: ["openFile"],
+      filters: [{ name: "Images", extensions: ["png", "jpg", "jpeg"] }],
+    });
+
+    result.then(({ canceled, filePaths, bookmarks }) => {
+      // const file = fs.readFileSync(filePaths[0]);
+      const filepath = filePaths[0];
+      console.log({ filepath });
+      // event.reply("selected-file", filepath);
+      event.sender.send("selected-file", filepath);
+      // const win = BrowserWindow.fromWebContents(event.sender);
+      // win.webContents.send("selected-file", filepath);
+    });
+  });
+
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
   } else {
@@ -31,11 +47,12 @@ const createWindow = () => {
     );
   }
 
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 };
 
-app.on("ready", createWindow);
+app.whenReady().then(() => {
+  createWindow();
+});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {

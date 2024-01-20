@@ -35,6 +35,15 @@ setButton.addEventListener("click", () => {
   window.electronAPI.setTitle(title);
 });
 
+const selectFileButton = document.querySelector("#select-file-btn");
+selectFileButton.addEventListener("click", () => {
+  window.electronAPI.selectFile();
+});
+
+window.electronAPI.onSelectedFile((filepath: string) => {
+  console.log(`renderer: ${filepath}`);
+});
+
 console.log(
   '👋 This message is being logged by "renderer.ts", included via Vite'
 );

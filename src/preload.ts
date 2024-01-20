@@ -4,4 +4,7 @@ const { contextBridge, ipcRenderer } = require("electron/renderer");
 
 contextBridge.exposeInMainWorld("electronAPI", {
   setTitle: (title: string) => ipcRenderer.send("set-title", title),
+  selectFile: () => ipcRenderer.send("select-file"),
+  onSelectedFile: (callback: (filepath: string) => void) =>
+    ipcRenderer.on("selected-file", (_event, value) => callback(value)),
 });
