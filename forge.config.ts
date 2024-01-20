@@ -8,6 +8,17 @@ import { VitePlugin } from "@electron-forge/plugin-vite";
 const config: ForgeConfig = {
   packagerConfig: {},
   rebuildConfig: {},
+  publishers: [
+    {
+      name: "@electron-forge/publisher-github",
+      config: {
+        repository: {
+          owner: "tegaki-tegaki",
+          name: "croquis-desktop",
+        },
+      },
+    },
+  ],
   makers: [
     new MakerSquirrel({}, ["win32"]),
     new MakerZIP({}, ["darwin", "win32", "linux"]),
