@@ -2,7 +2,7 @@
   "name": "croquis-desktop",
   "productName": "croquis-desktop",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Croquis-desktop app",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
@@ -13,8 +13,8 @@
   },
   "keywords": [],
   "author": {
-    "name": "",
-    "email": ""
+    "name": "tegaki",
+    "email": "drawydraws@pm.me"
   },
   "license": "MIT",
   "devDependencies": {
