@@ -14,6 +14,9 @@ const electronAPI = {
     ipcRenderer.send("select-random-image", folder_path),
   onStopSession: (callback: () => void) =>
     ipcRenderer.on("stop-session", (_event, value) => callback()),
+  onError: (callback: (errorObj: any) => void) => {
+    ipcRenderer.on("error", (_event, value) => callback(value));
+  },
 };
 
 export type ElectronAPI = typeof electronAPI;

@@ -81,7 +81,15 @@ const createWindow = () => {
   });
 
   ipcMain.on("select-random-image", (event, folder_path) => {
-    const dir = fs.readdirSync(folder_path, { recursive: true });
+    let dir;
+    try {
+      dir = fs.readdirSync(folder_path, { recursive: true });
+    } catch (e) {
+      console.log(e);
+      event.reply("error", `failed to open directory: ${folder_path}`);
+      event.reply("stop-session");
+      return;
+    }
     const filepath_within_dir = selectRandom(dir);
     const filepath = `${folder_path}/${filepath_within_dir}`;
     // TODO: re-roll if non image file (eg. .DS_Store)

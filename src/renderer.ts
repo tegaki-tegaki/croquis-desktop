@@ -53,7 +53,10 @@ const imageDurationOutput = document.querySelector(
 ) as HTMLOutputElement;
 const startSessionButton = document.querySelector("#start-session-button");
 const overlay = document.querySelector("#overlay");
+const infiniteDuration = document.querySelector("#infinite-duration");
 
+let selected_folder = "";
+let session_active = false;
 let interval_ref: number;
 
 setButton.addEventListener("click", () => {
@@ -74,6 +77,8 @@ selectFolderButton.addEventListener("click", () => {
   window.electronAPI.selectFolder();
 });
 window.electronAPI.onSelectedFolder((folder_path: string) => {
+  selected_folder = folder_path; // TODO: filter undefined (aborting selection)
+  startSessionButton.removeAttribute("disabled");
   selectedFolder.setAttribute("value", `${folder_path}`);
 });
 
@@ -85,24 +90,49 @@ imageDurationRange.addEventListener(
 );
 
 const start_session = () => {
-  log(`start session`);
-  const folder_path = selectedFolder.getAttribute("value");
+  if (!session_active) {
+    log(`start session`);
+    session_active = true;
+    const folder_path = selectedFolder.getAttribute("value");
 
-  window.electronAPI.selectRandomImage(folder_path);
-  const image_duration_ms = parseInt(imageDurationOutput.value) * 1000;
-  interval_ref = window.setInterval(() => {
     window.electronAPI.selectRandomImage(folder_path);
-  }, image_duration_ms);
+    const image_duration_ms = parseInt(imageDurationOutput.value) * 1000;
+    interval_ref = window.setInterval(() => {
+      window.electronAPI.selectRandomImage(folder_path);
+    }, image_duration_ms);
+  }
 };
 
 const stop_session = () => {
-  log(`stop session`);
-  overlay.setAttribute("hidden", "true");
+  if (session_active) {
+    log(`stop session`);
+    session_active = false;
+    overlay.setAttribute("hidden", "true");
 
-  window.clearInterval(interval_ref);
+    window.clearInterval(interval_ref);
+  }
 };
 
 startSessionButton.addEventListener("click", start_session);
 window.electronAPI.onStopSession(stop_session);
+
+infiniteDuration.addEventListener(
+  "input",
+  (event: Event & { target: HTMLInputElement }) => {
+    const checked = event.target.checked;
+
+    if (checked) {
+      imageDurationRange.setAttribute("disabled", "true");
+      imageDurationOutput.innerText = "∞";
+    } else {
+      imageDurationRange.removeAttribute("disabled");
+      imageDurationOutput.innerText = imageDurationRange.value;
+    }
+  }
+);
+
+window.electronAPI.onError((errorObj) => {
+  alert(JSON.stringify(errorObj));
+});
 
 log('👋 This message is being logged by "renderer.ts", included via Vite');
