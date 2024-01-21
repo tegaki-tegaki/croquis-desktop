@@ -7,6 +7,7 @@ import {
   MenuItem,
   net,
   protocol,
+  session,
 } from "electron";
 import fs from "fs";
 import path from "path";
@@ -117,6 +118,15 @@ app.whenReady().then(() => {
   });
 
   createWindow();
+
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        "Content-Security-Policy": ["default-src 'self' 'unsafe-inline'"],
+      },
+    });
+  });
 });
 
 app.on("window-all-closed", () => {
