@@ -1,7 +1,7 @@
-name: Bug Report
-description: File a bug report
+name: Feedback
+description: File a bug report or missing feature
 title: " "
-labels: ["bug"]
+labels: []
 projects: ["croquis-desktop"]
 assignees:
   - tegaki-tegaki
@@ -9,12 +9,12 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report!
+        Thanks for taking the time to give feedback!
   - type: textarea
     id: what-happened
     attributes:
-      label: What happened?
-      description: Also tell us, what did you expect to happen?
+      label: What's on your mind?
+      description: Tell us about anything at all!
       placeholder: Tell us what you see!
       value: "A bug happened!"
     validations:
@@ -26,4 +26,4 @@ body:
       description: What version was used?
       placeholder: vX.Y.Z
     validations:
-      required: true
+      required: false
