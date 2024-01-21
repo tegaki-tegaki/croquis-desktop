@@ -74,9 +74,11 @@ const createWindow = () => {
     });
 
     result.then(({ canceled, filePaths, bookmarks }) => {
-      const filepath = filePaths[0];
-      console.log({ filepath });
-      event.reply("selected-folder", filepath);
+      if (!canceled) {
+        const filepath = filePaths[0];
+        console.log({ filepath });
+        event.reply("selected-folder", filepath);
+      }
     });
   });
 
