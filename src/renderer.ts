@@ -30,6 +30,7 @@ import "./styles/reset.css";
 import "./styles/theme.css";
 import "./styles/index.css";
 import { ElectronAPI } from "./preload";
+import { log } from "./utils";
 
 declare global {
   interface Window {
@@ -37,6 +38,7 @@ declare global {
   }
 }
 
+// TODO: use a frontend framework to organize this a bit, it's going to hit critical mass soon
 const setButton = document.querySelector("#the-button");
 const titleInput = document.querySelector("#the-title") as HTMLInputElement;
 const selectFileButton = document.querySelector("#select-file-button");
@@ -52,7 +54,7 @@ const imageDurationOutput = document.querySelector(
 const startSessionButton = document.querySelector("#start-session-button");
 const overlay = document.querySelector("#overlay");
 
-let session_active = false;
+let interval_ref: number;
 
 setButton.addEventListener("click", () => {
   const title = titleInput.value;
@@ -65,15 +67,13 @@ selectFileButton.addEventListener("click", () => {
 window.electronAPI.onSelectedFile((filepath: string) => {
   theImage.setAttribute("src", `resource://${filepath}`);
   overlay.removeAttribute("hidden");
-  console.log(`renderer: ${filepath}`);
+  log(`${filepath}`);
 });
 
 selectFolderButton.addEventListener("click", () => {
   window.electronAPI.selectFolder();
 });
 window.electronAPI.onSelectedFolder((folder_path: string) => {
-  // theImage.setAttribute("src", `resource://${folder_path}`);
-  // console.log(`renderer: ${folder_path}`);
   selectedFolder.setAttribute("value", `${folder_path}`);
 });
 
@@ -84,29 +84,25 @@ imageDurationRange.addEventListener(
   }
 );
 
-startSessionButton.addEventListener("click", () => {
-  start_session();
-});
-
-window.electronAPI.onStopSession(() => {
-  stop_session();
-});
-
 const start_session = () => {
-  console.log(`renderer: start session`);
-  session_active = true;
-  // window.electronAPI.startSession();
+  log(`start session`);
   const folder_path = selectedFolder.getAttribute("value");
-  console.log({ folder: folder_path });
+
   window.electronAPI.selectRandomImage(folder_path);
+  const image_duration_ms = parseInt(imageDurationOutput.value) * 1000;
+  interval_ref = window.setInterval(() => {
+    window.electronAPI.selectRandomImage(folder_path);
+  }, image_duration_ms);
 };
 
 const stop_session = () => {
-  console.log(`renderer: stop session`);
-  session_active = false;
+  log(`stop session`);
   overlay.setAttribute("hidden", "true");
+
+  window.clearInterval(interval_ref);
 };
 
-console.log(
-  '👋 This message is being logged by "renderer.ts", included via Vite'
-);
+startSessionButton.addEventListener("click", start_session);
+window.electronAPI.onStopSession(stop_session);
+
+log('👋 This message is being logged by "renderer.ts", included via Vite');
