@@ -5,7 +5,7 @@ const { contextBridge, ipcRenderer } = require("electron/renderer");
 const electronAPI = {
   setTitle: (title: string) => ipcRenderer.send("set-title", title),
   selectFile: () => ipcRenderer.send("select-file"),
-  onSelectedFile: (callback: (filepath: string) => void) =>
+  onSelectedFile: (callback: (file_os_pathname: string) => void) =>
     ipcRenderer.on("selected-file", (_event, value) => callback(value)),
   selectFolder: () => ipcRenderer.send("select-folder"),
   onSelectedFolder: (callback: (folder_path: string) => void) =>

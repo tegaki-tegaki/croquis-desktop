@@ -12,6 +12,7 @@ import {
 import fs from "fs";
 import path from "path";
 import { selectRandom } from "./utils";
+import { pathToFileURL } from "node:url";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -95,9 +96,11 @@ const createWindow = () => {
     }
     const filepath_within_dir = selectRandom(dir);
     const filepath = `${folder_path}${path.sep}${filepath_within_dir}`;
+    const file_url = pathToFileURL(filepath);
+    const file_os_pathname = file_url.pathname;
     // TODO: re-roll if non image file (eg. .DS_Store, .mp4... etc)
-    console.log({ filepath });
-    event.reply("selected-file", filepath);
+    console.log({ filepath, file_os_pathname });
+    event.reply("selected-file", file_os_pathname);
   });
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {

@@ -69,16 +69,16 @@ setButton.addEventListener("click", () => {
 selectFileButton.addEventListener("click", () => {
   window.electronAPI.selectFile();
 });
-window.electronAPI.onSelectedFile((filepath: string) => {
-  theImage.setAttribute("src", `resource://${filepath}`);
+window.electronAPI.onSelectedFile((file_os_pathname) => {
+  theImage.setAttribute("src", `resource://${file_os_pathname}`);
   overlay.classList.remove("hidden");
-  log(`${filepath}`);
+  log(`${file_os_pathname}`);
 });
 
 selectFolderButton.addEventListener("click", () => {
   window.electronAPI.selectFolder();
 });
-window.electronAPI.onSelectedFolder((folder_path: string) => {
+window.electronAPI.onSelectedFolder((folder_path) => {
   selected_folder = folder_path;
   startSessionButton.removeAttribute("disabled");
   selectedFolder.setAttribute("value", `${folder_path}`);
