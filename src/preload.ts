@@ -2,7 +2,7 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 const { contextBridge, ipcRenderer } = require("electron/renderer");
 
-contextBridge.exposeInMainWorld("electronAPI", {
+const electronAPI = {
   setTitle: (title: string) => ipcRenderer.send("set-title", title),
   selectFile: () => ipcRenderer.send("select-file"),
   onSelectedFile: (callback: (filepath: string) => void) =>
@@ -14,4 +14,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.send("select-random-image", folder_path),
   onStopSession: (callback: () => void) =>
     ipcRenderer.on("stop-session", (_event, value) => callback()),
-});
+};
+
+export type ElectronAPI = typeof electronAPI;
+
+contextBridge.exposeInMainWorld("electronAPI", electronAPI);

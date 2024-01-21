@@ -29,17 +29,30 @@
 import "./styles/reset.css";
 import "./styles/theme.css";
 import "./styles/index.css";
+import { ElectronAPI } from "./preload";
+
+declare global {
+  interface Window {
+    electronAPI: ElectronAPI;
+  }
+}
 
 const setButton = document.querySelector("#the-button");
-const titleInput = document.querySelector("#the-title");
+const titleInput = document.querySelector("#the-title") as HTMLInputElement;
 const selectFileButton = document.querySelector("#select-file-button");
 const selectFolderButton = document.querySelector("#select-folder-button");
 const selectedFolder = document.querySelector("#display-selected-folder");
 const theImage = document.querySelector("#the-image");
-const imageDurationRange = document.querySelector("#image-duration");
-const imageDurationOutput = document.querySelector("#image-duration-output");
+const imageDurationRange = document.querySelector(
+  "#image-duration"
+) as HTMLInputElement;
+const imageDurationOutput = document.querySelector(
+  "#image-duration-output"
+) as HTMLOutputElement;
 const startSessionButton = document.querySelector("#start-session-button");
 const overlay = document.querySelector("#overlay");
+
+let session_active = false;
 
 setButton.addEventListener("click", () => {
   const title = titleInput.value;
@@ -64,21 +77,35 @@ window.electronAPI.onSelectedFolder((folder_path: string) => {
   selectedFolder.setAttribute("value", `${folder_path}`);
 });
 
-imageDurationRange.addEventListener("input", (event) => {
-  imageDurationOutput.textContent = `${event.target.value}`;
-});
+imageDurationRange.addEventListener(
+  "input",
+  (event: Event & { target: HTMLInputElement }) => {
+    imageDurationOutput.textContent = `${event.target.value}`;
+  }
+);
 
 startSessionButton.addEventListener("click", () => {
+  start_session();
+});
+
+window.electronAPI.onStopSession(() => {
+  stop_session();
+});
+
+const start_session = () => {
   console.log(`renderer: start session`);
+  session_active = true;
   // window.electronAPI.startSession();
   const folder_path = selectedFolder.getAttribute("value");
   console.log({ folder: folder_path });
   window.electronAPI.selectRandomImage(folder_path);
-});
+};
 
-window.electronAPI.onStopSession((filepath: string) => {
+const stop_session = () => {
+  console.log(`renderer: stop session`);
+  session_active = false;
   overlay.setAttribute("hidden", "true");
-});
+};
 
 console.log(
   '👋 This message is being logged by "renderer.ts", included via Vite'
