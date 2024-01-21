@@ -1,6 +1,6 @@
 name: Missing feature
 description: anything you feel is missing?
-title: ""
+title: ":sparkles:"
 labels: ["enhancement"]
 projects: ["croquis-desktop"]
 assignees:
