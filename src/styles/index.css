@@ -133,4 +133,16 @@ body {
   top: 0;
   left: 0;
   background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#overlay.hidden {
+  display: none;
+}
+
+#the-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }

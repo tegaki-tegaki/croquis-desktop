@@ -71,7 +71,7 @@ selectFileButton.addEventListener("click", () => {
 });
 window.electronAPI.onSelectedFile((filepath: string) => {
   theImage.setAttribute("src", `resource://${filepath}`);
-  overlay.removeAttribute("hidden");
+  overlay.classList.remove("hidden");
   log(`${filepath}`);
 });
 
@@ -79,7 +79,7 @@ selectFolderButton.addEventListener("click", () => {
   window.electronAPI.selectFolder();
 });
 window.electronAPI.onSelectedFolder((folder_path: string) => {
-  selected_folder = folder_path; // TODO: filter undefined (aborting selection)
+  selected_folder = folder_path;
   startSessionButton.removeAttribute("disabled");
   selectedFolder.setAttribute("value", `${folder_path}`);
 });
@@ -113,7 +113,7 @@ const stop_session = () => {
   if (session_active) {
     log(`stop session`);
     session_active = false;
-    overlay.setAttribute("hidden", "true");
+    overlay.classList.add("hidden");
 
     window.clearInterval(interval_ref);
   }

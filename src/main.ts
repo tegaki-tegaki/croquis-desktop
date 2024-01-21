@@ -94,8 +94,8 @@ const createWindow = () => {
       return;
     }
     const filepath_within_dir = selectRandom(dir);
-    const filepath = `${folder_path}/${filepath_within_dir}`;
-    // TODO: re-roll if non image file (eg. .DS_Store)
+    const filepath = `${folder_path}${path.sep}${filepath_within_dir}`;
+    // TODO: re-roll if non image file (eg. .DS_Store, .mp4... etc)
     console.log({ filepath });
     event.reply("selected-file", filepath);
   });
