@@ -1,0 +1,26 @@
+name: Feature Request
+description: Request a missing feature
+labels: ["enhancement"]
+assignees:
+  - tegaki-tegaki
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to give feedback!
+  - type: textarea
+    id: request-details
+    attributes:
+      label: Feature description
+      description: Please describe the feature you would like :)
+      placeholder: The app is missing...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Which version are you currently using?
+      placeholder: vX.Y.Z
+    validations:
+      required: true
