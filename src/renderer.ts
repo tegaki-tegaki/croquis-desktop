@@ -53,7 +53,9 @@ const imageDurationOutput = document.querySelector(
 ) as HTMLOutputElement;
 const startSessionButton = document.querySelector("#start-session-button");
 const overlay = document.querySelector("#overlay");
-const infiniteDuration = document.querySelector("#infinite-duration");
+const infiniteDuration = document.querySelector(
+  "#infinite-duration"
+) as HTMLInputElement;
 
 let selected_folder = "";
 let session_active = false;
@@ -97,9 +99,13 @@ const start_session = () => {
 
     window.electronAPI.selectRandomImage(folder_path);
     const image_duration_ms = parseInt(imageDurationOutput.value) * 1000;
-    interval_ref = window.setInterval(() => {
-      window.electronAPI.selectRandomImage(folder_path);
-    }, image_duration_ms);
+
+    const infinite_duration = infiniteDuration.checked;
+    if (!infinite_duration) {
+      interval_ref = window.setInterval(() => {
+        window.electronAPI.selectRandomImage(folder_path);
+      }, image_duration_ms);
+    }
   }
 };
 
