@@ -1,0 +1,22 @@
+name: Missing feature
+description: anything you feel is missing?
+title: ""
+labels: ["enhancement"]
+projects: ["croquis-desktop"]
+assignees:
+  - tegaki-tegaki
+body:
+  - type: markdown
+    attributes:
+      value: |
+        All feature requests are appreciated! :clap:
+  - type: textarea
+    id: missing-feature
+    attributes:
+      label: |
+        What feature would you like to see?! :sparkles:
+      placeholder: |
+        dream big :brain:, it's open source! :clap: (no promises!)
+      value: "There is something missing..."
+    validations:
+      required: true
