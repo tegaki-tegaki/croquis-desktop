@@ -1,7 +1,8 @@
 import type { ForgeConfig } from "@electron-forge/shared-types";
 import { MakerSquirrel } from "@electron-forge/maker-squirrel";
 import { MakerZIP } from "@electron-forge/maker-zip";
-import { MakerFlatpak } from "@electron-forge/maker-flatpak";
+import { MakerDeb } from "@electron-forge/maker-deb";
+// import { MakerFlatpak } from "@electron-forge/maker-flatpak";
 import { VitePlugin } from "@electron-forge/plugin-vite";
 
 const config: ForgeConfig = {
@@ -21,12 +22,13 @@ const config: ForgeConfig = {
   makers: [
     new MakerSquirrel({}),
     new MakerZIP({}, ["darwin"]),
-    new MakerFlatpak({
-      options: {
-        files: [],
-        categories: ["Utility", "Education"],
-      },
-    }),
+    new MakerDeb({}),
+    // new MakerFlatpak({
+    //   options: {
+    //     files: [],
+    //     categories: ["Utility", "Education"],
+    //   },
+    // }),
   ],
   plugins: [
     new VitePlugin({
