@@ -11,8 +11,10 @@ jobs:
       - uses: actions/setup-node@master
         with:
           node-version: 20
-      - name: Install elfutils (flatpak-builder, eu-strip...)
-        run: sudo apt-get install -y elfutils
+      - uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: elfutils
+          version: 1.0
       - name: install dependencies
         run: npm install
       - name: publish
