@@ -10,9 +10,9 @@ import {
   session,
 } from "electron";
 import fs from "fs";
+import { pathToFileURL } from "node:url";
 import path from "path";
 import { selectRandom } from "./utils";
-import { pathToFileURL } from "node:url";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -30,10 +30,17 @@ menu.append(
     label: "Electron",
     submenu: [
       {
-        role: "help",
+        label: "Stop session",
         accelerator: "Esc",
         click: () => {
           BrowserWindow.getFocusedWindow().webContents.send("stop-session");
+        },
+      },
+      {
+        label: "Quit",
+        accelerator: process.platform === "darwin" ? "cmd+q" : "ctrl+q",
+        click: () => {
+          app.quit();
         },
       },
     ],
