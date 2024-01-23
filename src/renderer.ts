@@ -1,36 +1,8 @@
-/**
- * This file will automatically be loaded by vite and run in the "renderer" context.
- * To learn more about the differences between the "main" and the "renderer" context in
- * Electron, visit:
- *
- * https://electronjs.org/docs/tutorial/application-architecture#main-and-renderer-processes
- *
- * By default, Node.js integration in this file is disabled. When enabling Node.js integration
- * in a renderer process, please be aware of potential security implications. You can read
- * more about security risks here:
- *
- * https://electronjs.org/docs/tutorial/security
- *
- * To enable Node.js integration in this file, open up `main.ts` and enable the `nodeIntegration`
- * flag:
- *
- * ```
- *  // Create the browser window.
- *  mainWindow = new BrowserWindow({
- *    width: 800,
- *    height: 600,
- *    webPreferences: {
- *      nodeIntegration: true
- *    }
- *  });
- * ```
- */
-
+import { log } from "./browser-utils";
+import { ElectronAPI } from "./preload";
+import "./styles/index.css";
 import "./styles/reset.css";
 import "./styles/theme.css";
-import "./styles/index.css";
-import { ElectronAPI } from "./preload";
-import { log } from "./utils";
 
 declare global {
   interface Window {
@@ -39,9 +11,6 @@ declare global {
 }
 
 // TODO: use a frontend framework to organize this a bit, it's going to hit critical mass soon
-const setButton = document.querySelector("#the-button");
-const titleInput = document.querySelector("#the-title") as HTMLInputElement;
-const selectFileButton = document.querySelector("#select-file-button");
 const selectFolderButton = document.querySelector("#select-folder-button");
 const selectedFolder = document.querySelector("#display-selected-folder");
 const theImage = document.querySelector("#the-image");
@@ -61,14 +30,6 @@ let selected_folder = "";
 let session_active = false;
 let interval_ref: number;
 
-setButton.addEventListener("click", () => {
-  const title = titleInput.value;
-  window.electronAPI.setTitle(title);
-});
-
-selectFileButton.addEventListener("click", () => {
-  window.electronAPI.selectFile();
-});
 window.electronAPI.onSelectedFile((file_os_pathname) => {
   theImage.setAttribute("src", `resource://${file_os_pathname}`);
   overlay.classList.remove("hidden");
@@ -98,14 +59,17 @@ const start_session = () => {
     const folder_path = selectedFolder.getAttribute("value");
 
     window.electronAPI.selectRandomImage(folder_path);
-    const image_duration_ms = parseInt(imageDurationOutput.value) * 1000;
+    set_image_interval(folder_path);
+  }
+};
 
-    const infinite_duration = infiniteDuration.checked;
-    if (!infinite_duration) {
-      interval_ref = window.setInterval(() => {
-        window.electronAPI.selectRandomImage(folder_path);
-      }, image_duration_ms);
-    }
+const set_image_interval = (folder_path: string) => {
+  const image_duration_ms = parseInt(imageDurationOutput.value) * 1000;
+  const infinite_duration = infiniteDuration.checked;
+  if (!infinite_duration) {
+    interval_ref = window.setInterval(() => {
+      window.electronAPI.selectRandomImage(folder_path);
+    }, image_duration_ms);
   }
 };
 
@@ -141,4 +105,11 @@ window.electronAPI.onError((errorObj) => {
   alert(JSON.stringify(errorObj));
 });
 
-log('👋 This message is being logged by "renderer.ts", included via Vite');
+window.electronAPI.onNextImage(() => {
+  if (session_active) {
+    window.clearInterval(interval_ref);
+    const folder_path = selectedFolder.getAttribute("value");
+    window.electronAPI.selectRandomImage(folder_path);
+    set_image_interval(folder_path);
+  }
+});

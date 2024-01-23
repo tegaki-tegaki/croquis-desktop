@@ -12,7 +12,7 @@ import {
 import fs from "fs";
 import { pathToFileURL } from "node:url";
 import path from "path";
-import { selectRandom } from "./utils";
+import { isImage, selectRandom } from "./node-utils";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -43,6 +43,20 @@ menu.append(
           app.quit();
         },
       },
+      {
+        label: "Open dev-tools",
+        accelerator: process.platform === "darwin" ? "cmd+alt+I" : "ctrl+alt+I",
+        click: () => {
+          BrowserWindow.getFocusedWindow().webContents.toggleDevTools();
+        },
+      },
+      {
+        label: "Next image",
+        accelerator: "Right",
+        click: () => {
+          BrowserWindow.getFocusedWindow().webContents.send("next-image");
+        },
+      },
     ],
   })
 );
@@ -71,9 +85,11 @@ const createWindow = () => {
     });
 
     result.then(({ canceled, filePaths, bookmarks }) => {
-      const filepath = filePaths[0];
-      console.log({ filepath });
-      event.reply("selected-file", filepath);
+      if (!canceled) {
+        const filepath = filePaths[0];
+        console.log({ filepath });
+        event.reply("selected-file", filepath);
+      }
     });
   });
 
@@ -91,7 +107,7 @@ const createWindow = () => {
     });
   });
 
-  ipcMain.on("select-random-image", (event, folder_path) => {
+  ipcMain.on("select-random-image", async (event, folder_path) => {
     let dir;
     try {
       dir = fs.readdirSync(folder_path, { recursive: true });
@@ -101,12 +117,16 @@ const createWindow = () => {
       event.reply("stop-session");
       return;
     }
-    const filepath_within_dir = selectRandom(dir);
-    const filepath = `${folder_path}${path.sep}${filepath_within_dir}`;
-    const file_url = pathToFileURL(filepath);
-    const file_os_pathname = file_url.pathname;
-    // TODO: re-roll if non image file (eg. .DS_Store, .mp4... etc)
-    console.log({ filepath, file_os_pathname });
+    let filepath_within_dir: string;
+    let file_os_pathname: string;
+    let filepath: string;
+    do {
+      filepath_within_dir = selectRandom(dir);
+      filepath = `${folder_path}${path.sep}${filepath_within_dir}`;
+      const file_url = pathToFileURL(filepath);
+      file_os_pathname = decodeURIComponent(file_url.pathname);
+    } while (!(await isImage(file_os_pathname)));
+
     event.reply("selected-file", file_os_pathname);
   });
 
@@ -117,8 +137,6 @@ const createWindow = () => {
       path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
     );
   }
-
-  // mainWindow.webContents.openDevTools();
 };
 
 app.whenReady().then(() => {
