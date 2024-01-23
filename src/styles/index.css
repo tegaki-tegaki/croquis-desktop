@@ -133,9 +133,6 @@ body {
   justify-content: center;
   align-items: center;
 }
-#overlay.hidden {
-  display: none;
-}
 
 #the-image {
   width: 100%;

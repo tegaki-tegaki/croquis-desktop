@@ -6,61 +6,6 @@
     <script type="module" src="/src/renderer.ts"></script>
   </head>
   <body>
-    <div class="page">
-      <div class="page-content">
-        <div class="card vstack">
-          <div class="vstack">
-            <button id="select-folder-button" class="cd-button">
-              Select folder
-            </button>
-            <input
-              id="display-selected-folder"
-              class="cd-input cd-input--long"
-              disabled
-              readonly
-              value=""
-            />
-            <div class="hstack between">
-              <label class="cd-text" for="image-duration">image duration</label>
-              <div>
-                <output id="image-duration-output" class="cd-text">30</output>
-                <span class="cd-text">s</span>
-              </div>
-            </div>
-            <input
-              id="image-duration"
-              class="cd-range"
-              name="image-duration"
-              type="range"
-              step="5"
-              min="5"
-              max="120"
-              value="30"
-            />
-            <div class="hstack align-center">
-              <input
-                id="infinite-duration"
-                class="cd-checkbox"
-                type="checkbox"
-                name="infinite-duration"
-              />
-              <label class="cd-text cd-label--inline" for="infinite-duration"
-                >Infinite duration</label
-              >
-            </div>
-            <div class="vspace"></div>
-            <div class="hstack gap-1">
-              <button id="start-session-button" class="cd-button" disabled>
-                Start session
-              </button>
-              <span class="cd-text">press (esc) to stop</span>
-            </div>
-          </div>
-        </div>
-        <div id="overlay" class="hidden">
-          <img id="the-image" />
-        </div>
-      </div>
-    </div>
+    <div id="app"></div>
   </body>
 </html>
