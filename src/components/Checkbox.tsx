@@ -6,11 +6,12 @@ type Props = {
   id?: string;
   className?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  checked?: boolean;
 };
 
 export const Checkbox = forwardRef(
   (
-    { id, className, label, onChange }: Props,
+    { id, className, label, onChange, checked }: Props,
     ref: MutableRefObject<HTMLInputElement>
   ) => {
     const _id = id || `checkbox-${React.useId()}`;
@@ -23,6 +24,7 @@ export const Checkbox = forwardRef(
           type="checkbox"
           name={_id}
           onChange={onChange}
+          checked={checked}
           ref={ref}
         />
         <label className="cd-text cd-label--inline" htmlFor={_id}>

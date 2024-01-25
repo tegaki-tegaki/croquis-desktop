@@ -87,6 +87,16 @@ body {
   cursor: pointer;
 }
 
+.cd-details {
+  width: 100%;
+}
+.cd-details[open] > .cd-details-contents {
+  background-color: var(--surface-secondary-dark);
+}
+.cd-details > .cd-details-contents {
+  padding: 1rem;
+}
+
 .hstack {
   display: flex;
   gap: 3px;

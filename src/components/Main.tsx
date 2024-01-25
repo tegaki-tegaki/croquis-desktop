@@ -9,6 +9,7 @@ export const Main = () => {
   const folderPathRef = React.useRef<HTMLInputElement>(null);
   const imageDurationRef = React.useRef<HTMLInputElement>(null);
   const infiniteDurationRef = React.useRef<HTMLInputElement>(null);
+  const showTimerRef = React.useRef<HTMLInputElement>(null);
   const intervalRef = React.useRef<number>();
   const sessionActive = React.useRef(false);
 
@@ -16,6 +17,7 @@ export const Main = () => {
   const [infiniteDuration, setInfiniteDuration] = React.useState(false);
   const [imageSrc, setImageSrc] = React.useState("");
   const [showImage, setShowImage] = React.useState(false);
+  const [showTimer, setShowTimer] = React.useState(true);
   const [folderPath, setFolderPath] = React.useState("");
   const [sessionButtonEnabled, setSessionButtonEnabled] = React.useState(true);
 
@@ -127,11 +129,25 @@ export const Main = () => {
               }}
               ref={imageDurationRef}
             />
-            <Checkbox
-              label="Infinite duration"
-              onChange={(event) => setInfiniteDuration(event.target.checked)}
-              ref={infiniteDurationRef}
-            />
+            <details className="cd-details">
+              <summary className="cd-text">Settings</summary>
+              <div className="cd-details-contents">
+                <Checkbox
+                  label="Infinite duration"
+                  onChange={(event) =>
+                    setInfiniteDuration(event.target.checked)
+                  }
+                  checked={infiniteDuration}
+                  ref={infiniteDurationRef}
+                />
+                <Checkbox
+                  label="Show timer"
+                  onChange={(event) => setShowTimer(event.target.checked)}
+                  checked={showTimer}
+                  ref={showTimerRef}
+                />
+              </div>
+            </details>
             <div className="vspace"></div>
             <div className="hstack gap-1">
               <button
