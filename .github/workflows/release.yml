@@ -72,6 +72,7 @@ jobs:
 
   update_release_body:
     runs-on: ubuntu-22.04
+    permissions: write-all
     needs: generate_changelog
     steps:
       - name: update release
