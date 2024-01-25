@@ -21,10 +21,18 @@ body = """
 {% endif %}\
 {% for group, commits in commits | group_by(attribute="group") %}
     ### {{ group | upper_first }}
-    {% for commit in commits %}
-        - {% if commit.breaking %}[**breaking**] {% endif %}{{ commit.message | upper_first }}\
-    {% endfor %}
+    {%- for commit in commits -%}
+        - {% if commit.breaking %}[:warning:breaking:warning:] {% endif %}{{ commit.message | upper_first }}\
+{% endfor %}
 {% endfor %}\n
+
+{% if version %}
+    {% if previous.version %}
+      **Full Changelog**: https://github.com/tegaki-tegaki/croquis-desktop/compare/{{ previous.version }}...{{ version }}
+    {% endif %}
+{% else -%}
+  {% raw %}\n{% endraw %}
+{% endif %}
 """
 # remove the leading and trailing whitespace from the template
 trim = true
@@ -48,16 +56,16 @@ split_commits = false
 # ]
 # regex for parsing and grouping commits
 commit_parsers = [
-  { message = "^\\:sparkles\\:", group = "✨ Features" },
-  { message = "^:bug:", group = "🐛 Bug Fixes" },
-  { message = "^:memo:", group = "📝 Documentation" },
-  { message = "^:zap:", group = "⚡️ Performance" },
-  { message = "^:recycle:", group = "♻️ Refactor" },
-  { message = "^:lipstick:", group = "💄 Styling" },
-  { message = "^:test_tube:", group = "🧪 Testing", skip = true },
+  { message = "^:sparkles:", group = "<!-- 0 -->✨ Features" },
+  { message = "^:bug:", group = "<!-- 1 -->🐛 Bug Fixes" },
+  { message = "^:zap:", group = "<!-- 3 -->⚡️ Performance" },
+  { body = ".*security", group = "<!-- 4 -->🔒 Security" },
+  { message = "^:lipstick:", group = "<!-- 5 -->💄 Styling", skip = true },
+  { message = "^:memo:", group = "<!-- 6 -->📝 Documentation", skip = true },
+  { message = "^:recycle:", group = "<!-- 7 -->♻️ Refactor", skip = true },
+  { message = "^:test_tube:", group = "<!-- 8 -->🧪 Testing", skip = true },
+  { message = "^chore|:construction_worker:", group = "<!-- 9 -->🚧 Miscellaneous Tasks", skip = true },
   { message = "^:construction:|:label:|:bookmark:|:alembic:|:rocket:", skip = true },
-  { message = "^chore|:construction_worker:", group = "🚧 Miscellaneous Tasks", skip = true },
-  { body = ".*security", group = "🔒 Security" },
   { message = "^revert", group = "Revert" },
 ]
 # protect breaking changes from being skipped due to matching a skipping commit_parser
