@@ -96,6 +96,9 @@ body {
 .cd-details > .cd-details-contents {
   padding: 1rem;
 }
+.cd-details > summary {
+  cursor: pointer;
+}
 
 .hstack {
   display: flex;

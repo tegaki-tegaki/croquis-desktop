@@ -11,6 +11,7 @@ export const Main = () => {
   const infiniteDurationRef = React.useRef<HTMLInputElement>(null);
   const showTimerRef = React.useRef<HTMLInputElement>(null);
   const intervalRef = React.useRef<number>();
+  const intervalProgressRef = React.useRef<number>();
   const sessionActive = React.useRef(false);
 
   const [imageDuration, setImageDuration] = React.useState(30);
@@ -20,6 +21,8 @@ export const Main = () => {
   const [showTimer, setShowTimer] = React.useState(true);
   const [folderPath, setFolderPath] = React.useState("");
   const [sessionButtonEnabled, setSessionButtonEnabled] = React.useState(true);
+  const [startTime, setStartTime] = React.useState(null);
+  const [now, setNow] = React.useState(null);
 
   const set_image_interval = () => {
     const image_duration_ms = parseInt(imageDurationRef.current.value) * 1000;
@@ -54,11 +57,29 @@ export const Main = () => {
     }
   };
 
+  function start_progress_timer() {
+    setStartTime(Date.now());
+    setNow(Date.now());
+
+    clearInterval(intervalProgressRef.current);
+    intervalProgressRef.current = window.setInterval(() => {
+      setNow(Date.now());
+    }, 100);
+  }
+
+  let secondsPassed = 0;
+  if (startTime != null && now != null) {
+    secondsPassed = (now - startTime) / 1000;
+  }
+  let pctPassedOfDuration =
+    ((secondsPassed + secondsPassed / imageDuration) / imageDuration) * 100;
+
   useEffect(() => {
     window.electronAPI.onSelectedFile((file_os_pathname) => {
       console.log({ file_os_pathname });
       setImageSrc(`resource://${file_os_pathname}`);
       setShowImage(true);
+      start_progress_timer();
     });
     window.electronAPI.onStopSession(() => {
       stop_session();
@@ -167,17 +188,20 @@ export const Main = () => {
         {showImage && (
           <div id="overlay">
             <img id="the-image" src={imageSrc} />
-            <CircularProgressbar
-              className="progress-pie"
-              value={22}
-              strokeWidth={50}
-              styles={buildStyles({
-                backgroundColor: "green",
-                strokeLinecap: "butt",
-                pathColor: "rgba(255, 255, 255, 0.8)",
-                trailColor: "rgba(0, 0, 0, 0.5)",
-              })}
-            />
+            {showTimer && secondsPassed < imageDuration - 0.1 && (
+              <CircularProgressbar
+                className="progress-pie"
+                value={pctPassedOfDuration}
+                strokeWidth={50}
+                styles={buildStyles({
+                  backgroundColor: "green",
+                  strokeLinecap: "butt",
+                  pathColor: "rgba(255, 255, 255, 0.7)",
+                  trailColor: "rgba(0, 0, 0, 0.4)",
+                  pathTransitionDuration: 0.2,
+                })}
+              />
+            )}
           </div>
         )}
       </div>
