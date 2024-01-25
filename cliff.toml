@@ -23,7 +23,7 @@ body = """
     ### {{ group | upper_first }}
     {%- for commit in commits -%}
         - {% if commit.breaking %}[:warning:breaking:warning:] {% endif %}{{ commit.message | upper_first }}\
-{% endfor %}
+    {% endfor %}
 {% endfor %}\n
 
 {% if version %}
