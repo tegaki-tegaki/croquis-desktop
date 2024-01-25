@@ -6,9 +6,40 @@ export const Main = () => {
   const [infiniteDuration, setInfiniteDuration] = React.useState(false);
   const [imageSrc, setImageSrc] = React.useState("");
   const [showImage, setShowImage] = React.useState(false);
-  const [sessionActive, setSessionActive] = React.useState(false);
   const [folderPath, setFolderPath] = React.useState("");
-  const [intervalRef, setIntervalRef] = React.useState<number>();
+  const [sessionButtonEnabled, setSessionButtonEnabled] = React.useState(true);
+
+  const intervalRef = React.useRef<number>();
+  const sessionActive = React.useRef(false);
+
+  const set_session = (active: boolean) => {
+    sessionActive.current = active;
+    setSessionButtonEnabled(!active);
+  };
+
+  const start_session = () => {
+    if (!sessionActive.current) {
+      log(`start session`);
+      set_session(true);
+
+      window.electronAPI.selectRandomImage(folderPath);
+      set_image_interval({
+        folderPath,
+        imageDuration,
+        infiniteDuration,
+        intervalRef,
+      });
+    }
+  };
+
+  const stop_session = () => {
+    if (sessionActive.current) {
+      log(`stop session`);
+      window.clearInterval(intervalRef.current);
+      set_session(false);
+      setShowImage(false);
+    }
+  };
 
   useEffect(() => {
     window.electronAPI.onSelectedFile((file_os_pathname) => {
@@ -17,13 +48,7 @@ export const Main = () => {
       setShowImage(true);
     });
     window.electronAPI.onStopSession(() => {
-      console.log({ sessionActive });
-      if (sessionActive) {
-        log(`stop session`);
-        window.clearInterval(intervalRef);
-        setSessionActive(false);
-        setShowImage(false);
-      }
+      stop_session();
     });
 
     window.electronAPI.onError((errorObj) => {
@@ -31,14 +56,14 @@ export const Main = () => {
     });
 
     window.electronAPI.onNextImage(() => {
-      if (sessionActive) {
+      if (sessionActive.current) {
         window.clearInterval(intervalRef);
         window.electronAPI.selectRandomImage(folderPath);
         set_image_interval({
           folderPath,
           imageDuration,
           infiniteDuration,
-          setIntervalRef,
+          intervalRef: setIntervalRef,
         });
       }
     });
@@ -119,20 +144,9 @@ export const Main = () => {
                 id="start-session-button"
                 className="cd-button"
                 onClick={() => {
-                  if (!sessionActive) {
-                    log(`start session`);
-                    setSessionActive(true);
-
-                    window.electronAPI.selectRandomImage(folderPath);
-                    set_image_interval({
-                      folderPath,
-                      imageDuration,
-                      infiniteDuration,
-                      setIntervalRef,
-                    });
-                  }
+                  start_session();
                 }}
-                disabled={folderPath === "" && sessionActive}
+                disabled={folderPath === "" || !sessionButtonEnabled}
               >
                 Start session
               </button>
@@ -154,19 +168,17 @@ const set_image_interval = ({
   folderPath,
   imageDuration,
   infiniteDuration,
-  setIntervalRef,
+  intervalRef,
 }: {
   folderPath: string;
   imageDuration: number;
   infiniteDuration: boolean;
-  setIntervalRef: (ref: number) => void;
+  intervalRef: React.MutableRefObject<number>;
 }) => {
   const image_duration_ms = imageDuration * 1000;
   if (!infiniteDuration) {
-    setIntervalRef(
-      window.setInterval(() => {
-        window.electronAPI.selectRandomImage(folderPath);
-      }, image_duration_ms)
-    );
+    intervalRef.current = window.setInterval(() => {
+      window.electronAPI.selectRandomImage(folderPath);
+    }, image_duration_ms);
   }
 };
