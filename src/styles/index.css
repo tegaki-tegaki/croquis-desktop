@@ -122,6 +122,10 @@ body {
   align-items: center;
 }
 
+#app {
+  height: 100%;
+}
+
 #overlay {
   position: absolute;
   width: 100vw;

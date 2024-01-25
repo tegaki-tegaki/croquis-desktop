@@ -2,15 +2,27 @@ import React, { useEffect } from "react";
 import { log } from "../browser-utils";
 
 export const Main = () => {
-  const [imageDuration, setImageDuration] = React.useState<number>(30);
+  const folderPathRef = React.useRef<HTMLInputElement>(null);
+  const imageDurationRef = React.useRef<HTMLInputElement>(null);
+  const infiniteDurationRef = React.useRef<HTMLInputElement>(null);
+  const intervalRef = React.useRef<number>();
+  const sessionActive = React.useRef(false);
+
+  const [imageDuration, setImageDuration] = React.useState(30);
   const [infiniteDuration, setInfiniteDuration] = React.useState(false);
   const [imageSrc, setImageSrc] = React.useState("");
   const [showImage, setShowImage] = React.useState(false);
   const [folderPath, setFolderPath] = React.useState("");
   const [sessionButtonEnabled, setSessionButtonEnabled] = React.useState(true);
 
-  const intervalRef = React.useRef<number>();
-  const sessionActive = React.useRef(false);
+  const set_image_interval = () => {
+    const image_duration_ms = parseInt(imageDurationRef.current.value) * 1000;
+    if (!infiniteDurationRef.current.checked) {
+      intervalRef.current = window.setInterval(() => {
+        window.electronAPI.selectRandomImage(folderPathRef.current.value);
+      }, image_duration_ms);
+    }
+  };
 
   const set_session = (active: boolean) => {
     sessionActive.current = active;
@@ -22,13 +34,8 @@ export const Main = () => {
       log(`start session`);
       set_session(true);
 
-      window.electronAPI.selectRandomImage(folderPath);
-      set_image_interval({
-        folderPath,
-        imageDuration,
-        infiniteDuration,
-        intervalRef,
-      });
+      window.electronAPI.selectRandomImage(folderPathRef.current.value);
+      set_image_interval();
     }
   };
 
@@ -57,14 +64,9 @@ export const Main = () => {
 
     window.electronAPI.onNextImage(() => {
       if (sessionActive.current) {
-        window.clearInterval(intervalRef);
-        window.electronAPI.selectRandomImage(folderPath);
-        set_image_interval({
-          folderPath,
-          imageDuration,
-          infiniteDuration,
-          intervalRef: setIntervalRef,
-        });
+        window.clearInterval(intervalRef.current);
+        window.electronAPI.selectRandomImage(folderPathRef.current.value);
+        set_image_interval();
       }
     });
 
@@ -93,6 +95,7 @@ export const Main = () => {
               disabled
               readOnly
               value={folderPath}
+              ref={folderPathRef}
             />
             <div className="hstack between">
               <label className="cd-text" htmlFor="image-duration">
@@ -118,6 +121,7 @@ export const Main = () => {
               onInput={(event) => {
                 setImageDuration(parseInt(event.currentTarget.value));
               }}
+              ref={imageDurationRef}
             />
             <div className="hstack align-center">
               <input
@@ -130,6 +134,7 @@ export const Main = () => {
                   const checked = event.target.checked;
                   setInfiniteDuration(checked);
                 }}
+                ref={infiniteDurationRef}
               />
               <label
                 className="cd-text cd-label--inline"
@@ -162,23 +167,4 @@ export const Main = () => {
       </div>
     </div>
   );
-};
-
-const set_image_interval = ({
-  folderPath,
-  imageDuration,
-  infiniteDuration,
-  intervalRef,
-}: {
-  folderPath: string;
-  imageDuration: number;
-  infiniteDuration: boolean;
-  intervalRef: React.MutableRefObject<number>;
-}) => {
-  const image_duration_ms = imageDuration * 1000;
-  if (!infiniteDuration) {
-    intervalRef.current = window.setInterval(() => {
-      window.electronAPI.selectRandomImage(folderPath);
-    }, image_duration_ms);
-  }
 };
