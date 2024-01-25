@@ -1,6 +1,10 @@
 import React, { useEffect } from "react";
 import { log } from "../browser-utils";
 
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import { Checkbox } from "./Checkbox";
+
 export const Main = () => {
   const folderPathRef = React.useRef<HTMLInputElement>(null);
   const imageDurationRef = React.useRef<HTMLInputElement>(null);
@@ -123,26 +127,11 @@ export const Main = () => {
               }}
               ref={imageDurationRef}
             />
-            <div className="hstack align-center">
-              <input
-                id="infinite-duration"
-                className="cd-checkbox"
-                type="checkbox"
-                name="infinite-duration"
-                checked={infiniteDuration}
-                onChange={(event) => {
-                  const checked = event.target.checked;
-                  setInfiniteDuration(checked);
-                }}
-                ref={infiniteDurationRef}
-              />
-              <label
-                className="cd-text cd-label--inline"
-                htmlFor="infinite-duration"
-              >
-                Infinite duration
-              </label>
-            </div>
+            <Checkbox
+              label="Infinite duration"
+              onChange={(event) => setInfiniteDuration(event.target.checked)}
+              ref={infiniteDurationRef}
+            />
             <div className="vspace"></div>
             <div className="hstack gap-1">
               <button
@@ -162,6 +151,17 @@ export const Main = () => {
         {showImage && (
           <div id="overlay">
             <img id="the-image" src={imageSrc} />
+            <CircularProgressbar
+              className="progress-pie"
+              value={22}
+              strokeWidth={50}
+              styles={buildStyles({
+                backgroundColor: "green",
+                strokeLinecap: "butt",
+                pathColor: "rgba(255, 255, 255, 0.8)",
+                trailColor: "rgba(0, 0, 0, 0.5)",
+              })}
+            />
           </div>
         )}
       </div>
