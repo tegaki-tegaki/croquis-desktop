@@ -12,7 +12,7 @@ import {
 import fs from "fs";
 import { pathToFileURL } from "node:url";
 import path from "path";
-import { isImage, selectRandom } from "./node-utils";
+import { isImage, shuffleArray } from "./node-utils";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -63,6 +63,8 @@ menu.append(
 
 Menu.setApplicationMenu(menu);
 
+let session_image_sequence: string[] = [];
+
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 1920,
@@ -107,27 +109,41 @@ const createWindow = () => {
     });
   });
 
-  ipcMain.on("select-random-image", async (event, folder_path) => {
+  ipcMain.on("select-random-image", async (event) => {
+    const image_path = session_image_sequence.pop();
+    if (image_path) {
+      event.reply("selected-file", image_path);
+    } else {
+      event.reply("stop-session");
+    }
+  });
+
+  ipcMain.on("start-session", async (event, folder_path) => {
+    console.log("start session");
+    session_image_sequence = [];
+
     let dir;
     try {
       dir = fs.readdirSync(folder_path, { recursive: true });
     } catch (e) {
       console.log(e);
-      event.reply("error", `failed to open directory: ${folder_path}`);
-      event.reply("stop-session");
       return;
     }
     let filepath_within_dir: string;
     let file_os_pathname: string;
     let filepath: string;
-    do {
-      filepath_within_dir = selectRandom(dir);
-      filepath = `${folder_path}${path.sep}${filepath_within_dir}`;
+
+    for (const file of dir) {
+      filepath = `${folder_path}${path.sep}${file}`;
       const file_url = pathToFileURL(filepath);
       file_os_pathname = decodeURIComponent(file_url.pathname);
-    } while (!(await isImage(file_os_pathname)));
 
-    event.reply("selected-file", file_os_pathname);
+      if (isImage(file_os_pathname)) {
+        session_image_sequence.push(file_os_pathname);
+      }
+    }
+
+    shuffleArray(session_image_sequence);
   });
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {

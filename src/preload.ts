@@ -5,11 +5,8 @@ const { contextBridge, ipcRenderer } = require("electron/renderer");
 const electronAPI = {
   onSelectedFile: (callback: (file_os_pathname: string) => void) =>
     ipcRenderer.on("selected-file", (_event, value) => callback(value)),
-  selectFolder: () => ipcRenderer.send("select-folder"),
   onSelectedFolder: (callback: (folder_path: string) => void) =>
     ipcRenderer.on("selected-folder", (_event, value) => callback(value)),
-  selectRandomImage: (folder_path: string) =>
-    ipcRenderer.send("select-random-image", folder_path),
   onStopSession: (callback: () => void) =>
     ipcRenderer.on("stop-session", (_event, value) => callback()),
   onError: (callback: (errorObj: any) => void) => {
@@ -17,6 +14,11 @@ const electronAPI = {
   },
   onNextImage: (callback: () => void) =>
     ipcRenderer.on("next-image", (_event, value) => callback()),
+  selectFolder: () => ipcRenderer.send("select-folder"),
+  selectRandomImage: (folder_path: string) =>
+    ipcRenderer.send("select-random-image", folder_path),
+  startSession: (folder_path: string) =>
+    ipcRenderer.send("start-session", folder_path),
 };
 
 export type ElectronAPI = typeof electronAPI;

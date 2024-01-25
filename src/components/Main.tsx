@@ -43,6 +43,7 @@ export const Main = () => {
       log(`start session`);
       set_session(true);
 
+      window.electronAPI.startSession(folderPathRef.current.value);
       window.electronAPI.selectRandomImage(folderPathRef.current.value);
       set_image_interval();
     }
