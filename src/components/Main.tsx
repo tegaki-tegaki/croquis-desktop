@@ -40,12 +40,10 @@ export const Main = () => {
 
   const start_session = () => {
     if (!sessionActive.current) {
-      log(`start session`);
+      log(`request start session`);
       set_session(true);
 
       window.electronAPI.startSession(folderPathRef.current.value);
-      window.electronAPI.selectRandomImage(folderPathRef.current.value);
-      set_image_interval();
     }
   };
 
@@ -100,6 +98,12 @@ export const Main = () => {
 
     window.electronAPI.onSelectedFolder((folder_path) => {
       setFolderPath(folder_path);
+    });
+
+    window.electronAPI.onPreflightStartSessionDone(() => {
+      log("start session (preflight done)");
+      window.electronAPI.selectRandomImage(folderPathRef.current.value);
+      set_image_interval();
     });
   }, []);
 

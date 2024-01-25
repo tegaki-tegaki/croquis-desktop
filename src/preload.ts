@@ -12,6 +12,10 @@ const electronAPI = {
   onError: (callback: (errorObj: any) => void) => {
     ipcRenderer.on("error", (_event, value) => callback(value));
   },
+  onPreflightStartSessionDone: (callback: () => void) =>
+    ipcRenderer.on("preflight-start-session-done", (_event, value) =>
+      callback()
+    ),
   onNextImage: (callback: () => void) =>
     ipcRenderer.on("next-image", (_event, value) => callback()),
   selectFolder: () => ipcRenderer.send("select-folder"),

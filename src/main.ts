@@ -129,21 +129,24 @@ const createWindow = () => {
       console.log(e);
       return;
     }
-    let filepath_within_dir: string;
-    let file_os_pathname: string;
-    let filepath: string;
 
     for (const file of dir) {
-      filepath = `${folder_path}${path.sep}${file}`;
+      const filepath = `${folder_path}${path.sep}${file}`;
       const file_url = pathToFileURL(filepath);
-      file_os_pathname = decodeURIComponent(file_url.pathname);
+      const file_os_pathname = decodeURIComponent(file_url.pathname);
+      const is_image = await isImage(file_os_pathname);
 
-      if (isImage(file_os_pathname)) {
+      console.log({ is_image });
+
+      if (is_image) {
         session_image_sequence.push(file_os_pathname);
       }
     }
 
+    console.log({ session_image_sequence });
+
     shuffleArray(session_image_sequence);
+    event.reply("preflight-start-session-done");
   });
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
