@@ -1,12 +1,14 @@
-import type { ForgeConfig } from "@electron-forge/shared-types";
+import { MakerDeb } from "@electron-forge/maker-deb";
 import { MakerSquirrel } from "@electron-forge/maker-squirrel";
 import { MakerZIP } from "@electron-forge/maker-zip";
-import { MakerDeb } from "@electron-forge/maker-deb";
+import type { ForgeConfig } from "@electron-forge/shared-types";
 // import { MakerFlatpak } from "@electron-forge/maker-flatpak";
 import { VitePlugin } from "@electron-forge/plugin-vite";
 
 const config: ForgeConfig = {
-  packagerConfig: {},
+  packagerConfig: {
+    icon: "icons/icon",
+  },
   rebuildConfig: {},
   publishers: [
     {
@@ -20,9 +22,16 @@ const config: ForgeConfig = {
     },
   ],
   makers: [
-    new MakerSquirrel({}),
+    new MakerSquirrel({
+      // iconUrl: "",
+      setupIcon: "icons/icon.ico",
+    }),
     new MakerZIP({}, ["darwin"]),
-    new MakerDeb({}),
+    new MakerDeb({
+      options: {
+        icon: "icons/icon.png",
+      },
+    }),
     // new MakerFlatpak({
     //   options: {
     //     files: [],

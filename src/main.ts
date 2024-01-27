@@ -72,6 +72,7 @@ const createWindow = () => {
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
+    icon: "icons/icon.png",
   });
 
   ipcMain.on("set-title", (event, title) => {
