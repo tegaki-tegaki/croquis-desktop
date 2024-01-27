@@ -78,7 +78,14 @@ export const Main = () => {
       console.log({ file_os_pathname });
       setImageSrc(`resource://${file_os_pathname}`);
       setShowImage(true);
-      start_progress_timer();
+
+      clearInterval(intervalProgressRef.current);
+      if (
+        !infiniteDurationRef.current.checked &&
+        showTimerRef.current.checked
+      ) {
+        start_progress_timer();
+      }
     });
     window.electronAPI.onStopSession(() => {
       stop_session();
@@ -193,20 +200,23 @@ export const Main = () => {
         {showImage && (
           <div id="overlay">
             <img id="the-image" src={imageSrc} />
-            {showTimer && secondsPassed < imageDuration - 0.1 && (
-              <CircularProgressbar
-                className="progress-pie"
-                value={pctPassedOfDuration}
-                strokeWidth={50}
-                styles={buildStyles({
-                  backgroundColor: "green",
-                  strokeLinecap: "butt",
-                  pathColor: "rgba(255, 255, 255, 0.7)",
-                  trailColor: "rgba(0, 0, 0, 0.4)",
-                  pathTransitionDuration: 0.2,
-                })}
-              />
-            )}
+            {!infiniteDuration &&
+              showTimer &&
+              secondsPassed < imageDuration - 0.1 && (
+                <CircularProgressbar
+                  className="progress-pie"
+                  value={pctPassedOfDuration}
+                  strokeWidth={50}
+                  styles={buildStyles({
+                    backgroundColor: "green",
+                    strokeLinecap: "butt",
+                    pathColor: "rgba(255, 255, 255, 0.7)",
+                    trailColor: "rgba(0, 0, 0, 0.4)",
+                    pathTransitionDuration: 0.2,
+                    pathTransition: "linear",
+                  })}
+                />
+              )}
           </div>
         )}
       </div>
