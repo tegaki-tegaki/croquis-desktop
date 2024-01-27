@@ -1,7 +1,7 @@
 {
   "name": "croquis-desktop",
   "productName": "croquis-desktop",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Croquis-desktop app",
   "main": ".vite/build/main.js",
   "scripts": {
