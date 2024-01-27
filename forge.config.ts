@@ -23,7 +23,8 @@ const config: ForgeConfig = {
   ],
   makers: [
     new MakerSquirrel({
-      // iconUrl: "",
+      iconUrl:
+        "https://raw.githubusercontent.com/tegaki-tegaki/croquis-desktop/main/icons/icon.ico",
       setupIcon: "icons/icon.ico",
     }),
     new MakerZIP({}, ["darwin"]),
